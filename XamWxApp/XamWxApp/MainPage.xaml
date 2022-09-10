@@ -16,6 +16,7 @@
                 <Entry x:Name="StateCode"
                        Placeholder="ex. TX"
                        TextTransform="Uppercase"
+                       MaxLength="2"
                        HorizontalOptions="FillAndExpand"/>
                 <Button x:Name="GetAlertsButton"
                         Clicked="GetAlertsButton_Clicked"

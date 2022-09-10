@@ -10,20 +10,39 @@ namespace XamWxApp
 {
     public partial class MainPage : ContentPage
     {
+        private readonly HttpClient _httpClient;
+
         public MainPage()
         {
             InitializeComponent();
+            _httpClient = GetHttpClient();
         }
 
         async void GetAlertsButton_Clicked(System.Object sender, System.EventArgs e)
         {
-            AlertsCount.Text = "";
-            AlertsList.ItemsSource = null;
+            Reset();
 
-            var httpClient = new HttpClient();
-            var response = await httpClient.GetStringAsync(new Uri($"https://api.weather.gov/alerts/active/area/{StateCode.Text.ToUpper()}"));
+            var response = await _httpClient.GetStringAsync(new Uri($"https://api.weather.gov/alerts/active/area/{StateCode.Text.ToUpper()}"));
             var alerts = GetAlertsByZones(JObject.Parse(response));
 
+            UpdateUI(alerts);
+        }
+
+        void Reset()
+        {
+            AlertsCount.Text = "";
+            AlertsList.ItemsSource = null;
+        }
+
+        HttpClient GetHttpClient()
+        {
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-agent", "wxapp");
+            return httpClient;
+        }
+
+        void UpdateUI(Alert[] alerts)
+        {
             if (alerts.Length > 0)
                 AlertsCount.Text = $"Found {alerts.Length} active alerts";
             else
@@ -133,6 +152,11 @@ namespace XamWxApp
             {
                 return new Alert[0];
             }
+        }
+
+        ~MainPage()
+        {
+            _httpClient.Dispose();
         }
     }
 }
