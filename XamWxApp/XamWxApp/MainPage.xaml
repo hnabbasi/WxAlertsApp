@@ -26,11 +26,22 @@
                    Margin="20,0"
                    HorizontalOptions="Start"
                    TextColor="Gray"/>
-            <ListView x:Name="AlertsList">
+            <ListView x:Name="AlertsList"
+                      HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="m:Alert">
-                    <TextCell Text="{Binding Event}"
-                              Detail="{Binding Sent, StringFormat='Sent: {0:M/dd/yy hh:mmtt}'}"/>
+                    <ViewCell>
+                        <StackLayout
+                            Padding="10">
+                            <Label Text="{Binding Event}"
+                                   FontSize="Subtitle"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding Headline}"
+                                   FontSize="Small"
+                                   Padding="5,0"
+                                   TextColor="Gray"/>
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
