@@ -82,65 +82,17 @@ namespace XamWxApp
                     if (id != null && id.Type != JTokenType.Null)
                         alert.Id = id.Value<string>();
 
-                    var type = prop["@type"];
-                    if (type != null && type.Type != JTokenType.Null)
-                        alert.Type = type.Value<string>();
-
-                    var areaDesc = prop["areaDesc"];
-                    if (areaDesc != null && areaDesc.Type != JTokenType.Null)
-                        alert.AreaDesc = areaDesc.Value<string>();
-
                     var sent = prop["sent"];
                     if (sent != null && sent.Type != JTokenType.Null)
                         alert.Sent = DateTimeOffset.Parse(sent.Value<string>());
-
-                    var effective = prop["effective"];
-                    if (effective != null && effective.Type != JTokenType.Null)
-                        alert.Effective = DateTimeOffset.Parse(effective.Value<string>());
-
-                    var expires = prop["expires"];
-                    if (expires != null && expires.Type != JTokenType.Null)
-                        alert.Expires = DateTimeOffset.Parse(expires.Value<string>());
-
-                    var status = prop["status"];
-                    if (status != null && status.Type != JTokenType.Null)
-                        alert.Status = status.Value<string>();
-
-                    var severity = prop["severity"];
-                    if (severity != null && severity.Type != JTokenType.Null)
-                        alert.Severity = severity.Value<string>();
-
-                    var certainty = prop["certainty"];
-                    if (certainty != null && certainty.Type != JTokenType.Null)
-                        alert.Certainty = certainty.Value<string>();
-
-                    var urgency = prop["urgency"];
-                    if (urgency != null && urgency.Type != JTokenType.Null)
-                        alert.Urgency = urgency.Value<string>();
 
                     var @event = prop["event"];
                     if (@event != null && @event.Type != JTokenType.Null)
                         alert.Event = @event.Value<string>();
 
-                    var senderName = prop["senderName"];
-                    if (senderName != null && senderName.Type != JTokenType.Null)
-                        alert.SenderName = senderName.Value<string>();
-
                     var headline = prop["headline"];
                     if (headline != null && headline.Type != JTokenType.Null)
                         alert.Headline = headline.Value<string>();
-
-                    var description = prop["description"];
-                    if (description != null && description.Type != JTokenType.Null)
-                        alert.Description = description.Value<string>();
-
-                    var instruction = prop["instruction"];
-                    if (instruction != null && instruction.Type != JTokenType.Null)
-                        alert.Instruction = instruction.Value<string>();
-
-                    var response = prop["response"];
-                    if (response != null && response.Type != JTokenType.Null)
-                        alert.Response = response.Value<string>();
 
                     alerts[i] = alert;
                 }
@@ -150,6 +102,7 @@ namespace XamWxApp
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return new Alert[0];
             }
         }
