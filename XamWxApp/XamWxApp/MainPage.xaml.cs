@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using Xamarin.Forms;
-using Newtonsoft.Json;
 using XamWxApp.Models;
 using Newtonsoft.Json.Linq;
 using System.Linq;
@@ -18,6 +17,13 @@ namespace XamWxApp
             _httpClient = GetHttpClient();
         }
 
+        HttpClient GetHttpClient()
+        {
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "wx-app");
+            return httpClient;
+        }
+
         async void GetAlertsButton_Clicked(System.Object sender, System.EventArgs e)
         {
             Reset();
@@ -25,7 +31,7 @@ namespace XamWxApp
             var response = await _httpClient.GetStringAsync(new Uri($"https://api.weather.gov/alerts/active/area/{StateCode.Text.ToUpper()}"));
             var alerts = GetAlertsByZones(JObject.Parse(response));
 
-            UpdateUI(alerts);
+            UpdateUi(alerts);
         }
 
         void Reset()
@@ -34,20 +40,11 @@ namespace XamWxApp
             AlertsList.ItemsSource = null;
         }
 
-        HttpClient GetHttpClient()
+        void UpdateUi(Alert[] alerts)
         {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-agent", "wxapp");
-            return httpClient;
-        }
-
-        void UpdateUI(Alert[] alerts)
-        {
-            if (alerts.Length > 0)
-                AlertsCount.Text = $"Found {alerts.Length} active alerts";
-            else
-                AlertsCount.Text = "No active alerts found";
-
+            AlertsCount.Text = alerts.Length > 0 
+                ? $"Found {alerts.Length} active alerts" 
+                : "No active alerts found";
             AlertsList.ItemsSource = alerts;
         }
 
@@ -58,23 +55,18 @@ namespace XamWxApp
                 var features = json["features"];
 
                 if (features == null || features.Type == JTokenType.Null || features.Count() == 0)
-                {
-                    Console.WriteLine($">>> No alerts found.");
-                    return new Alert[0];
-                }
+                    return Array.Empty<Alert>();
+                
                 var count = features.Count();
 
                 var alerts = new Alert[count];
-#if DEBUG
-                Console.WriteLine($">>> Parsing {features.Count()} alerts...");
-#endif
 
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     var prop = features[i]?["properties"];
 
                     if (prop == null || prop.Type == JTokenType.Null)
-                        return new Alert[0];
+                        return Array.Empty<Alert>();
 
                     var alert = new Alert();
 
@@ -96,14 +88,12 @@ namespace XamWxApp
 
                     alerts[i] = alert;
                 }
-
-                Console.WriteLine($">>> Found {count} alerts");
                 return alerts;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return new Alert[0];
+                return Array.Empty<Alert>();
             }
         }
 
@@ -113,4 +103,3 @@ namespace XamWxApp
         }
     }
 }
-
